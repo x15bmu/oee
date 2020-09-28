@@ -1,0 +1,6 @@
+.eslintrc.js
+.next/**
+.vscode/**
+jest.config.js
+tsconfig.jest.json
+tsconfig.json
