@@ -35,4 +35,6 @@ const navigation: Array<NavigationItem> = [
   },
 ];
 
+export const LOGIN_PAGE = "/";
+
 export default navigation;

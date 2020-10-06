@@ -1,9 +1,10 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import useSWR from "swr";
+import { GetServerSideProps } from "next";
 import Nav from "../components/Nav";
 // import withAuthServerSideProps from "../components/withAuth";
-import { getFirstQueryValue, useQuery } from "../utils/queryUtils";
+import { getFirstQueryValue, useQuery } from "../utils/urlUtils";
 import ResolutionFilter, {
   serializeResolution,
   deserializeResolution,
@@ -22,9 +23,16 @@ import FilterWrapper from "../components/FilterWrapper";
 import getCellOeeAnalysis from "../utils/oeeApi";
 import { Resolution } from "../utils/dateUtils";
 
+const MainContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`;
+
 const OeeAnalysisTableContainer = styled.div`
-  margin: 12px;
   box-shadow: 0px -2px 14px -10px;
+  flex: 1;
+  margin: 12px;
 `;
 
 // This is the top-level component for the whole OEE anlaysis page.
@@ -55,8 +63,9 @@ const OeeAnalysis = () => {
 
   // Fetch data for the query.
   // TODO: Handle the error.
+  const key = `/api?resolution=${serializedResolution}&dateRange=${serializedDateRange}&oeeAnalysisOption=${serializedOeeAnalysisOption}`;
   const { data } = useSWR(
-    `/api?resolution=${serializedResolution}&dateRange=${serializedDateRange}&oeeAnalysisOption=${serializedOeeAnalysisOption}`,
+    key,
     getCellOeeAnalysis // You can use any async function here to fetch data.
   );
 
@@ -82,38 +91,48 @@ const OeeAnalysis = () => {
   // Render.
   return (
     <Nav>
-      <FilterWrapper>
-        <ResolutionFilter
-          resolution={resolution}
-          updateResolution={(r) => {
-            updateResolution(serializeResolution(r));
-          }}
-        />
-        <DateRangeFilter
-          dateRange={dateRange}
-          updateDateRange={(r) => {
-            updateDateRange(serializeDateRange(r));
-          }}
-        />
-        <OeeAnalysisTabs
-          option={oeeAnalysisTabOption}
-          updateOption={(o) => {
-            updateOeeAnalysisOption(serializeOeeAnalysisTabOption(o));
-          }}
-        />
-      </FilterWrapper>
-      <OeeAnalysisTableContainer>
-        <OeeAnalysisTable
-          dataSource={data}
-          dateRange={dateRange}
-          resolution={resolution}
-        />
-      </OeeAnalysisTableContainer>
+      <MainContainer>
+        <FilterWrapper>
+          <ResolutionFilter
+            resolution={resolution}
+            updateResolution={(r) => {
+              updateResolution(serializeResolution(r));
+            }}
+          />
+          <DateRangeFilter
+            dateRange={dateRange}
+            updateDateRange={(r) => {
+              updateDateRange(serializeDateRange(r));
+            }}
+          />
+          <OeeAnalysisTabs
+            option={oeeAnalysisTabOption}
+            updateOption={(o) => {
+              updateOeeAnalysisOption(serializeOeeAnalysisTabOption(o));
+            }}
+          />
+        </FilterWrapper>
+        <OeeAnalysisTableContainer>
+          <OeeAnalysisTable
+            dataSource={data}
+            dateRange={dateRange}
+            resolution={resolution}
+          />
+        </OeeAnalysisTableContainer>
+      </MainContainer>
     </Nav>
   );
 };
 
 export default OeeAnalysis;
 
-// TODO: Auth.
+// NOTE: You can use this function to check for authentication before actually loading the webpage.
+// If you don't care about loading the webpage, then you can use the format below. Static loading
+// currently isn't supported since the state for the filters is determined based on the query
+// string (or alternately based on local storage).
 // export const getServerSideProps = withAuthServerSideProps();
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getServerSideProps: GetServerSideProps = (_context) => {
+  return Promise.resolve({ props: {} });
+};

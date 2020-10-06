@@ -26,7 +26,7 @@ const NavDrawerContainer = styled.div`
   height: calc(100% - 46px);
 `;
 
-/** 
+/**
  * Adds a navbar with a toolbar and a drawer to the react application.
  * All main app contents should be children of this component.
  */

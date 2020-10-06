@@ -2,6 +2,7 @@ import React, { ReactElement } from "react";
 import { TreeList, Column, FilterRow } from "devextreme-react/tree-list";
 import styled from "styled-components";
 import { dxTreeListColumn, dxTreeListNode } from "devextreme/ui/tree_list";
+import { LoadPanel } from "devextreme-react/load-panel";
 import {
   addDateDelta,
   DateDelta,
@@ -314,38 +315,49 @@ interface Props {
 }
 
 /** The OEE analysis table, which displays data from the provided dataSource. */
-const OeeAnalysisTable = ({ dataSource, dateRange, resolution }: Props) => {
-  return (
-    <StyledTreeList
-      columnMinWidth={75}
-      dataSource={dataSource}
-      keyExpr="id"
-      onCellPrepared={(e) => {
-        customizeCell(
-          e.rowType as RowType,
-          e.column!,
-          e.row?.node!,
-          e.cellElement!,
-          e.value
-        );
-      }}
-      parentIdExpr="parentId"
-      rootValue={null}
-      width="100%"
-    >
-      <FilterRow visible />
-      <Column dataField="sName" caption="Node" width="191px" />
-      <Column
-        dataField="average"
-        caption="Avg."
-        minWidth={COL_MIN_WIDTH}
-        cellRender={(e) => <>{e.value} %</>}
-      />
-      <Column dataField="Min" caption="Min" minWidth={COL_MIN_WIDTH} />
-      <Column dataField="Max" caption="Max" minWidth={COL_MIN_WIDTH} />
-      {createDateColumns(dateRange, resolutionToDateDelta(resolution))}
-    </StyledTreeList>
-  );
-};
+const OeeAnalysisTable = React.memo(
+  ({ dataSource, dateRange, resolution }: Props) => {
+    if (dataSource === undefined) {
+      // For some reason, it's better to completely remove the tree list from the DOM
+      // as opposed to setting the dataSource to undefined. Probably, it's not
+      // well optimized.
+      return <LoadPanel visible />;
+    }
+    return (
+      <StyledTreeList
+        columnMinWidth={75}
+        dataSource={dataSource}
+        height="100%"
+        keyExpr="id"
+        loadPanel={{ enabled: true }}
+        onCellPrepared={(e) => {
+          customizeCell(
+            e.rowType as RowType,
+            e.column!,
+            e.row?.node!,
+            e.cellElement!,
+            e.value
+          );
+        }}
+        parentIdExpr="parentId"
+        rootValue={null}
+        scrolling={{ columnRenderingMode: "virtual" }}
+        width="100%"
+      >
+        <FilterRow visible />
+        <Column dataField="sName" caption="Node" width="191px" />
+        <Column
+          dataField="average"
+          caption="Avg."
+          minWidth={COL_MIN_WIDTH}
+          cellRender={(e) => <>{e.value} %</>}
+        />
+        <Column dataField="Min" caption="Min" minWidth={COL_MIN_WIDTH} />
+        <Column dataField="Max" caption="Max" minWidth={COL_MIN_WIDTH} />
+        {createDateColumns(dateRange, resolutionToDateDelta(resolution))}
+      </StyledTreeList>
+    );
+  }
+);
 
 export default OeeAnalysisTable;

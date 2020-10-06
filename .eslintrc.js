@@ -24,4 +24,7 @@ module.exports = {
       'aspects': ['invalidHref', 'preferButton'],
     }],
   },
+  env: {
+    browser: true,
+  },
 };

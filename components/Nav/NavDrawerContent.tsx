@@ -60,7 +60,7 @@ const renderNavTreeViewItem = (item: NavigationItem) => {
 
 /**
  * Internal to Nav module.
- * 
+ *
  * The drawer contents of the nav.
  */
 const NavDrawerContent = () => {

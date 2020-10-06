@@ -2,9 +2,9 @@ import React, { PropsWithChildren } from "react";
 import { Drawer } from "devextreme-react/drawer";
 import NavDrawerContent from "./NavDrawerContent";
 
-/** 
+/**
  * Internal to nav module.
- * 
+ *
  * A drawer for the nav.
  */
 const NavDrawer = ({
