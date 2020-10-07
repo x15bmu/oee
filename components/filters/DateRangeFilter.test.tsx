@@ -9,15 +9,18 @@ import { DateRange } from "../../utils/dateUtils";
 
 describe("DateRangeFilter", () => {
   it("renders with correct date", () => {
+    // Setup
     const dateRange: DateRange = {
       startDate: new Date(Date.UTC(2020, 9, 31, 1, 30)),
       endDate: new Date(Date.UTC(2020, 10, 1)),
     };
 
+    // Test
     const { getByTestId } = render(
       <DateRangeFilter dateRange={dateRange} updateDateRange={() => {}} />
     );
 
+    // Assertions
     const input = getByTestId("date-range-filter-input") as HTMLInputElement;
     expect(input.value).toEqual("31 Oct 2020 01:30 - 01 Nov 2020 00:00");
   });

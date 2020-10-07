@@ -1,9 +1,8 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import useSWR from "swr";
-import { GetServerSideProps } from "next";
 import Nav from "../components/Nav";
-// import withAuthServerSideProps from "../components/withAuth";
+import withAuthServerSideProps from "../components/withAuth";
 import { getFirstQueryValue, useQuery } from "../utils/urlUtils";
 import ResolutionFilter, {
   serializeResolution,
@@ -130,9 +129,9 @@ export default OeeAnalysis;
 // If you don't care about loading the webpage, then you can use the format below. Static loading
 // currently isn't supported since the state for the filters is determined based on the query
 // string (or alternately based on local storage).
-// export const getServerSideProps = withAuthServerSideProps();
+export const getServerSideProps = withAuthServerSideProps();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getServerSideProps: GetServerSideProps = (_context) => {
-  return Promise.resolve({ props: {} });
-};
+// export const getServerSideProps: GetServerSideProps = (_context) => {
+//   return Promise.resolve({ props: {} });
+// };

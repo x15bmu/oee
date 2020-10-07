@@ -6,8 +6,8 @@ interface OeeDataEntry {
   parentId?: string;
   sName: string;
   average: number;
-  Min: "";
-  Max: "";
+  Min: string;
+  Max: string;
   [dateRange: string]: any;
 }
 

@@ -1,11 +1,30 @@
 import { GetServerSideProps } from "next";
 import { IncomingMessage } from "http";
 
-const LOGIN_PAGE = "/login";
+const LOGIN_PAGE = "/";
+
+const JWT_NAME = "jwt";
+const JWT_TOKEN_PREFIX = `${JWT_NAME}=`;
+const JWT_TOKEN = "myToken";
+
+const isAuthorized = async (
+  cookies: string[] | undefined
+): Promise<boolean> => {
+  return (
+    !!cookies &&
+    cookies.some((cookie) => {
+      const index = cookie.indexOf(JWT_TOKEN_PREFIX);
+      if (index !== 0) {
+        return false;
+      }
+      // In reality, here you would query the server to see if the token matches.
+      return cookie.trimRight().substr(JWT_TOKEN_PREFIX.length) === JWT_TOKEN;
+    })
+  );
+};
 
 async function checkAuthentication(req: IncomingMessage) {
-  // TODO: Implement authentication checking.
-  return !!req;
+  return isAuthorized(req.headers.cookie?.split(";"));
 }
 
 export default function withAuthServerSideProps(

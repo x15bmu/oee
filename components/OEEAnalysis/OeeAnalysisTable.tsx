@@ -312,52 +312,62 @@ interface Props {
   dataSource: OeeData | undefined;
   dateRange: DateRange;
   resolution: Resolution;
+  useVirtualColumns?: boolean;
 }
 
 /** The OEE analysis table, which displays data from the provided dataSource. */
-const OeeAnalysisTable = React.memo(
-  ({ dataSource, dateRange, resolution }: Props) => {
-    if (dataSource === undefined) {
-      // For some reason, it's better to completely remove the tree list from the DOM
-      // as opposed to setting the dataSource to undefined. Probably, it's not
-      // well optimized.
-      return <LoadPanel visible />;
-    }
-    return (
-      <StyledTreeList
-        columnMinWidth={75}
-        dataSource={dataSource}
-        height="100%"
-        keyExpr="id"
-        loadPanel={{ enabled: true }}
-        onCellPrepared={(e) => {
-          customizeCell(
-            e.rowType as RowType,
-            e.column!,
-            e.row?.node!,
-            e.cellElement!,
-            e.value
-          );
-        }}
-        parentIdExpr="parentId"
-        rootValue={null}
-        scrolling={{ columnRenderingMode: "virtual" }}
-        width="100%"
-      >
-        <FilterRow visible />
-        <Column dataField="sName" caption="Node" width="191px" />
-        <Column
-          dataField="average"
-          caption="Avg."
-          minWidth={COL_MIN_WIDTH}
-          cellRender={(e) => <>{e.value} %</>}
-        />
-        <Column dataField="Min" caption="Min" minWidth={COL_MIN_WIDTH} />
-        <Column dataField="Max" caption="Max" minWidth={COL_MIN_WIDTH} />
-        {createDateColumns(dateRange, resolutionToDateDelta(resolution))}
-      </StyledTreeList>
-    );
+const OeeAnalysisTable = ({
+  dataSource,
+  dateRange,
+  resolution,
+  useVirtualColumns,
+}: Props) => {
+  if (dataSource === undefined) {
+    // For some reason, it's better to completely remove the tree list from the DOM
+    // as opposed to setting the dataSource to undefined. Probably, it's not
+    // well optimized.
+    return <LoadPanel visible />;
   }
-);
+  return (
+    <StyledTreeList
+      columnMinWidth={75}
+      dataSource={dataSource}
+      height="100%"
+      keyExpr="id"
+      loadPanel={{ enabled: true }}
+      onCellPrepared={(e) => {
+        customizeCell(
+          e.rowType as RowType,
+          e.column!,
+          e.row?.node!,
+          e.cellElement!,
+          e.value
+        );
+      }}
+      parentIdExpr="parentId"
+      rootValue={null}
+      scrolling={
+        useVirtualColumns ? { columnRenderingMode: "virtual" } : undefined
+      }
+      width="100%"
+    >
+      <FilterRow visible />
+      <Column dataField="sName" caption="Node" width="191px" />
+      <Column
+        dataField="average"
+        caption="Avg."
+        minWidth={COL_MIN_WIDTH}
+        cellRender={(e) => <>{e.value} %</>}
+      />
+      <Column dataField="Min" caption="Min" minWidth={COL_MIN_WIDTH} />
+      <Column dataField="Max" caption="Max" minWidth={COL_MIN_WIDTH} />
+      {createDateColumns(dateRange, resolutionToDateDelta(resolution))}
+    </StyledTreeList>
+  );
+};
 
-export default OeeAnalysisTable;
+OeeAnalysisTable.defaultProps = {
+  useVirtualColumns: true,
+};
+
+export default React.memo(OeeAnalysisTable);

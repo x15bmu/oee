@@ -9,15 +9,28 @@ describe("OeeAnalysisTable", () => {
       startDate: new Date(Date.UTC(2020, 9, 20)),
       endDate: new Date(Date.UTC(2020, 10, 1)),
     };
+    const defaultData = [
+      {
+        id: "dataSourceId",
+        parentId: undefined,
+        sName: "dataSourceName",
+        average: 0.87,
+        Min: "",
+        Max: "",
+      },
+    ];
 
-    it("renders columns correctly with month resolution", () => {
-      const { container } = render(
+    it("renders columns correctly with month resolution", async () => {
+      const { container, findByText } = render(
         <OeeAnalysisTable
-          dataSource={undefined}
+          dataSource={defaultData}
           dateRange={dateRange}
           resolution={Resolution.OneMonth}
+          useVirtualColumns={false}
         />
       );
+      // It takes some time for the table to render, so we wait until Node appears.
+      await findByText("Node");
 
       // Check all the columns.
       let column = container.querySelector(
@@ -45,14 +58,17 @@ describe("OeeAnalysisTable", () => {
       expect(column).toBeNull();
     });
 
-    it("renders columns correctly with week resolution", () => {
-      const { container } = render(
+    it("renders columns correctly with week resolution", async () => {
+      const { container, findByText } = render(
         <OeeAnalysisTable
-          dataSource={undefined}
+          dataSource={defaultData}
           dateRange={dateRange}
           resolution={Resolution.TwoWeek}
+          useVirtualColumns={false}
         />
       );
+      // It takes some time for the table to render, so we wait until Node appears.
+      await findByText("Node");
 
       // Check all the columns.
       let column = container.querySelector(
@@ -80,14 +96,17 @@ describe("OeeAnalysisTable", () => {
       expect(column).toBeNull();
     });
 
-    it("renders columns correctly with day resolution", () => {
-      const { container } = render(
+    it("renders columns correctly with day resolution", async () => {
+      const { container, findByText } = render(
         <OeeAnalysisTable
-          dataSource={undefined}
+          dataSource={defaultData}
           dateRange={dateRange}
           resolution={Resolution.OneDay}
+          useVirtualColumns={false}
         />
       );
+      // It takes some time for the table to render, so we wait until Node appears.
+      await findByText("Node");
 
       const headerRows = Array.from(
         container.querySelectorAll("tr.dx-header-row")
@@ -131,14 +150,17 @@ describe("OeeAnalysisTable", () => {
       expect(column).toBeNull();
     });
 
-    it("renders columns correctly with hour resolution", () => {
-      const { container } = render(
+    it("renders columns correctly with hour resolution", async () => {
+      const { container, findByText } = render(
         <OeeAnalysisTable
-          dataSource={undefined}
+          dataSource={defaultData}
           dateRange={dateRange}
           resolution={Resolution.TwelveHour}
+          useVirtualColumns={false}
         />
       );
+      // It takes some time for the table to render, so we wait until Node appears.
+      await findByText("Node");
 
       const headerRows = Array.from(
         container.querySelectorAll("tr.dx-header-row")
@@ -206,6 +228,7 @@ describe("OeeAnalysisTable", () => {
           ]}
           dateRange={dateRange}
           resolution={Resolution.OneDay}
+          useVirtualColumns={false}
         />
       );
 
@@ -238,6 +261,7 @@ describe("OeeAnalysisTable", () => {
           ]}
           dateRange={dateRange}
           resolution={Resolution.OneDay}
+          useVirtualColumns={false}
         />
       );
 
@@ -288,6 +312,7 @@ describe("OeeAnalysisTable", () => {
           ]}
           dateRange={dateRange}
           resolution={Resolution.OneDay}
+          useVirtualColumns={false}
         />
       );
 
